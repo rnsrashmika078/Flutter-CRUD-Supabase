@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:test/screens/insert_update_user_screen.dart';
 import 'package:test/services/supabase_service.dart';
 
@@ -26,134 +27,141 @@ class _ViewScreen extends State<ViewScreen> {
     });
   }
 
+  final user = Supabase.instance.client.auth.currentUser;
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(6),
-            child: Column(
-              children: [
-                ElevatedButton(
-                  onPressed: () =>
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              MutationScreen(purpose: "insert"),
-                        ),
-                      ).then((_) {
-                        fetchUsers();
-                      }),
-                  child: Text("Add User"),
-                ),
-              ],
+    print("current Auth user $user");
+    return Scaffold(
+      body: Center(
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(6),
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                MutationScreen(purpose: "insert"),
+                          ),
+                        ).then((_) {
+                          fetchUsers();
+                        }),
+                    child: Text("Add User"),
+                  ),
+                ],
+              ),
             ),
-          ),
-          users.isNotEmpty
-              ? Expanded(
-                  child: ListView.builder(
-                    itemCount: users.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Card(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(12),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 50,
-                                          height: 50,
-                                          decoration: BoxDecoration(
-                                            color: Colors.blue,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              users[index]['name'][0],
-                                              style: TextStyle(
-                                                fontSize: 30,
-                                                color: Colors.white,
+            users.isNotEmpty
+                ? Expanded(
+                    child: ListView.builder(
+                      itemCount: users.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Card(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(12),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Container(
+                                            width: 50,
+                                            height: 50,
+                                            decoration: BoxDecoration(
+                                              color: Colors.blue,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                users[index]['name'][0],
+                                                style: TextStyle(
+                                                  fontSize: 30,
+                                                  color: Colors.white,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(width: 20),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Name: ${users[index]['name']}",
-                                            ),
-                                            Text(
-                                              "Age: ${users[index]['age'].toString()}",
-                                            ),
-                                            Text("Job: ${users[index]['job']}"),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          onPressed: () =>
-                                              Navigator.push(
+                                          SizedBox(width: 20),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Name: ${users[index]['name']}",
+                                              ),
+                                              Text(
+                                                "Age: ${users[index]['age'].toString()}",
+                                              ),
+                                              Text(
+                                                "Job: ${users[index]['job']}",
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () =>
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        MutationScreen(
+                                                          purpose: "update",
+                                                          id: users[index]['id'],
+                                                          name:
+                                                              users[index]['name'],
+                                                          age:
+                                                              users[index]['age'],
+                                                          job:
+                                                              users[index]['job'],
+                                                        ),
+                                                  ),
+                                                ).then((_) {
+                                                  fetchUsers();
+                                                }),
+                                            icon: Icon(Icons.edit),
+                                          ),
+                                          SizedBox(width: 20),
+                                          IconButton(
+                                            onPressed: () async {
+                                              final res = await deleteUser(
+                                                users[index]['id'],
+                                              );
+                                              fetchUsers();
+                                              ScaffoldMessenger.of(
                                                 context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      MutationScreen(
-                                                        purpose: "update",
-                                                        id: users[index]['id'],
-                                                        name:
-                                                            users[index]['name'],
-                                                        age:
-                                                            users[index]['age'],
-                                                        job:
-                                                            users[index]['job'],
-                                                      ),
-                                                ),
-                                              ).then((_) {
-                                                fetchUsers();
-                                              }),
-                                          icon: Icon(Icons.edit),
-                                        ),
-                                        SizedBox(width: 20),
-                                        IconButton(
-                                          onPressed: () async {
-                                            final res = await deleteUser(
-                                              users[index]['id'],
-                                            );
-                                            fetchUsers();
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
-                                              SnackBar(content: Text(res)),
-                                            );
-                                          },
-                                          icon: Icon(Icons.delete),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                              ).showSnackBar(
+                                                SnackBar(content: Text(res)),
+                                              );
+                                            },
+                                            icon: Icon(Icons.delete),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                )
-              : Column(children: [Text("No Users found!")]),
-        ],
+                        );
+                      },
+                    ),
+                  )
+                : Column(children: [Text("No Users found!")]),
+          ],
+        ),
       ),
     );
   }

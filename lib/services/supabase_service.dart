@@ -65,6 +65,7 @@ Future<String> insertUser(Map<String, dynamic> newUser) async {
   }
   return "Error while insert user!";
 }
+
 /// **update data from  `Supabase db`.**
 //
 /// Returns a success message or error string.
@@ -96,10 +97,10 @@ Future<String> updateUser(int id, Map<String, dynamic> updateUserData) async {
 /// Example:
 /// ```dart
 /// await Supabase.instance.client
-///      .from(table)
-///      .delete()
-///     .eq('id', id)
-///     .select()
+///       .from(table)
+///       .delete()
+///       .eq('id', id)
+///       .select()
 /// ```
 Future<String> deleteUser(int id) async {
   final deletedUser = await Supabase.instance.client
@@ -112,4 +113,19 @@ Future<String> deleteUser(int id) async {
     return "User deleted successfully!";
   }
   return "Error while delete user!";
+}
+
+Future<User?> AuthUser({
+  required String email,
+  required String password,
+}) async {
+  final res = await Supabase.instance.client.auth.signUp(
+    email: email,
+    password: password,
+  );
+  final user = res.user;
+  if (user != null) {
+    return user;
+  }
+  return null;
 }

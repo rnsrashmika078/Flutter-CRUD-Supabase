@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:test/screens/auth_screen.dart';
 import 'package:test/screens/insert_update_user_screen.dart';
 import 'package:test/screens/view_screen.dart';
 import 'package:test/services/supabase_service.dart';
@@ -21,6 +23,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyApp extends State<MyApp> {
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,7 +41,7 @@ class _MyApp extends State<MyApp> {
             child: Icon(Icons.add),
           ),
           appBar: CustomAppBar(title: "SUPABASE"),
-          body: ViewScreen(),
+          body: AuthScreen(),
         ),
       ),
     );
