@@ -95,6 +95,7 @@ class _MutationScreen extends State<MutationScreen> {
                   ),
                   SizedBox(height: 10),
                   TextField(
+                    obscureText: true,
                     controller: jobCTRL,
                     decoration: InputDecoration(
                       labelText: "Enter your job",
